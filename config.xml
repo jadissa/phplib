@@ -1,6 +1,10 @@
+<!--
+Configs for a given project can be anything you would like.
+They are all read the same way in your apps: settings::get()
+-->
 <?xml version='1.0' encoding='UTF-8'?>
 <configs>
-    <name>Nikken Postit</name>
+    <name>Nikken Project Name</name>
     <version>1.0</version>
     <database>
         <driver></driver>
@@ -9,5 +13,5 @@
         <password></password>
         <dbname></dbname>
     </database>
-    <basedir>/var/www/html/postit/</basedir>
+    <basedir>/some/directory/</basedir>
 </configs>
