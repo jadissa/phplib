@@ -1,0 +1,30 @@
+Description
+You should not have written any code yet ;)
+The aim of this project is to speed development for PHP related applications
+
+Installation
+Create your project folder first.
+cd /your/project/
+git checkout git@bitbucket.org:nikkenmobile/nikkenphplib.git ./vendor/nikkenphplib
+
+Setup
+Your porject should define an entry point at its root such as index.php.
+The beginning of your entry point should contain the following PHP code:
+<?php
+require_once __DIR__ . '/vendor/nikkenphplib/index.php';
+try
+{
+    $settings = settings::get();
+    if (empty($settings))
+    {
+        throw new Exception('Settings cannot be determined');
+    }
+}
+catch(Exception $e)
+{
+    die($e->getMessage());
+}
+?>
+
+Usage
+settings::get()
