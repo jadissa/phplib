@@ -1,0 +1,17 @@
+{
+    "name": "nikkenmobile/nikkenphplib",
+    "description": "Nikken's PHP library",
+    "authors": [
+        {
+            "name": "Jadissa Griffin",
+            "email": "jadissag@nikken.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "NikkenPHPLib": "src/"
+        }
+    }
+}
