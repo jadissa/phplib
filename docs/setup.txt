@@ -11,9 +11,10 @@ Setup
 Your porject should define an entry point at its root such as index.php.
 The beginning of your entry point should contain the following PHP code:
 <?php
-require_once __DIR__ . '/vendor/nikkenphplib/index.php';
+require_once __DIR__ . '/../vendor/nikkenphplib/index.php';
 try
 {
+session_start();
     $settings = settings::get();
     if (empty($settings))
     {
@@ -25,6 +26,3 @@ catch(Exception $e)
     die($e->getMessage());
 }
 ?>
-
-Usage
-settings::get()
