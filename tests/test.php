@@ -4,4 +4,4 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 
 use NikkenPHPLib\Fw;
 
-echo Fw::init();
+echo Fw::json_encode(Fw::getSettings());
