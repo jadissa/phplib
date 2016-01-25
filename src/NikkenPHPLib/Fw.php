@@ -152,8 +152,12 @@ class Fw extends lib
         {
             try
             {
-                $current_directory = new \RecursiveDirectoryIterator('..');
-                foreach (new \RecursiveIteratorIterator($current_directory) as $file)
+                $current_directory = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator("."),
+                    \RecursiveIteratorIterator::LEAVES_ONLY,
+                    \RecursiveIteratorIterator::CATCH_GET_CHILD);
+
+                foreach ($current_directory as $file)
                 {
                     if (preg_match('/settings.xml/', $file))
                     {
