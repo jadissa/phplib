@@ -111,6 +111,19 @@ class lib extends strings
         return self::$listing;
     }
 
+    /*
+    public static function ls($directory)
+    {
+        self::$directory = $directory;
+        self::$listing = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(self::$directory),
+            \RecursiveIteratorIterator::LEAVES_ONLY,
+            \RecursiveIteratorIterator::CATCH_GET_CHILD);
+        var_dump(self::$listing);
+        return self::$listing;
+    }
+    */
+
     public static function read($file)
     {
         self::$file = $file;
@@ -153,7 +166,7 @@ class Fw extends lib
             try
             {
                 $current_directory = new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator("."),
+                    new \RecursiveDirectoryIterator(".."),
                     \RecursiveIteratorIterator::LEAVES_ONLY,
                     \RecursiveIteratorIterator::CATCH_GET_CHILD);
 
