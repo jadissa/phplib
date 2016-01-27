@@ -5,17 +5,17 @@ The aim of this project is to speed development for PHP related applications
 Installation
 Create your project folder first.
 cd /your/project/
-git checkout git@bitbucket.org:nikkenmobile/nikkenphplib.git ./vendor/nikkenphplib
+git checkout https://github.com/nikken1/phplib.git ./vendor/phplib
 
 Setup
 Your porject should define an entry point at its root such as index.php.
 The beginning of your entry point should contain the following PHP code:
 <?php
-require_once __DIR__ . '/../vendor/nikkenphplib/index.php';
+require_once __DIR__ . '/vendor/nikken1/phplib/src/NikkenPHPLib/Fw.php';
+use NikkenPHPLib\Fw;
 try
 {
-session_start();
-    $settings = settings::get();
+    $settings = Fw::getSettings();
     if (empty($settings))
     {
         throw new Exception('Settings cannot be determined');
