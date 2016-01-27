@@ -4,11 +4,11 @@ The aim of this project is to speed development for PHP related applications
 
 Installation
 Create your project folder first.
-cd /your/project/
-git checkout https://github.com/nikken1/phplib.git ./vendor/phplib
+cd /this/phplib/
+composer install
 
 Setup
-Your porject should define an entry point at its root such as index.php.
+Your project should define an entry point at its root such as index.php.
 The beginning of your entry point should contain the following PHP code:
 <?php
 require_once __DIR__ . '/vendor/nikken1/phplib/src/NikkenPHPLib/Fw.php';
