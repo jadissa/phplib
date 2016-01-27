@@ -185,4 +185,40 @@ class Fw extends lib
             }
         }
     }
+
+    public static function ldapAuth($username, $password)
+    {
+        try
+        {
+            $ldap = ldap_connect(self::$settings->ldap->server);
+            $ldaprdn = self::$settings->ldap->dn . "\\{$username}";
+            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+            $bind = @ldap_bind($ldap, $ldaprdn, $password);
+            if (!$bind)
+            {
+                return FALSE;
+            }
+
+            $filter = "(sAMAccountName={$username})";
+            $result = ldap_search($ldap, (string) self::$settings->ldap->searchbase, $filter);
+            if ((!$result) OR !is_resource($result))
+            {
+                return FALSE;
+            }
+            ldap_sort($ldap, $result, 'sn');
+            $info = ldap_get_entries($ldap, $result);
+            if ((!$info) OR empty($info))
+            {
+                return FALSE;
+            }
+            @ldap_close($ldap);
+            $_SESSION['auth'] = TRUE;
+            return TRUE;
+        }
+        catch(Exception $e)
+        {
+            return FALSE;
+        }
+    }
 }
