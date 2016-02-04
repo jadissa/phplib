@@ -6,44 +6,15 @@ class strings
     /**
      * json_encode results with error checking
      * @param array $results
+     * @throws \Exception
      * @return mixed
-     * @throws Exception
      */
     public static function json_encode($results)
     {
         $results = json_encode($results);
         if ($results === FALSE)
         {
-            switch (json_last_error())
-            {
-                case JSON_ERROR_DEPTH:
-                    throw new \Exception('json_encode error: Max stack depth exceeded');
-                    break;
-                case JSON_ERROR_STATE_MISMATCH:
-                    throw new \Exception('json_encode error: Underflow or the modes mismatch');
-                    break;
-                case JSON_ERROR_CTRL_CHAR:
-                    throw new \Exception('json_encode error: Unexpected control character found');
-                    break;
-                case JSON_ERROR_SYNTAX:
-                    throw new \Exception('json_encode error: Syntax error, malformed JSON');
-                    break;
-                case JSON_ERROR_UTF8:
-                    throw new \Exception('json_encode error: Malformed UTF-8 characters, possibly incorrectly encoded');
-                    break;
-                case JSON_ERROR_RECURSION:
-                    throw new \Exception('json_encode error: One or more recursive references in the value to be encoded');
-                    break;
-                case JSON_ERROR_INF_OR_NAN:
-                    throw new \Exception('One or more NAN or INF values in the value to be encoded');
-                    break;
-                case JSON_ERROR_UNSUPPORTED_TYPE:
-                    throw new \Exception('A value of a type that cannot be encoded was given');
-                    break;
-                default:
-                    throw new \Exception('json_encode error: Unknown error ' . json_last_error());
-                    break;
-            }
+            throw new \Exception(json_last_error_msg(json_last_error()));
         }
         else
         {
@@ -61,6 +32,11 @@ class strings
         return strtr($stripAccents,'àáâãäçèéêëìíîïñòóôõöùúûü','aaaaaceeeeiiiinooooouuuu');
     }
 
+    /**
+     * Convert data to UTF8
+     * @param array|string $d
+     * @return array|string
+     */
     function utf8ize($d)
     {
         if (is_array($d))
@@ -104,6 +80,12 @@ class lib extends strings
      */
     private static $contents;
 
+    /**
+     * Lists contents of directory
+     * @param string $directory
+     * @throws \Exception
+     * @return array
+     */
     public static function ls($directory)
     {
         self::$directory = $directory;
@@ -128,6 +110,12 @@ class lib extends strings
     }
     */
 
+    /**
+     * Reads file
+     * @param string $file
+     * @throws \Exception
+     * @return string
+     */
     public static function read($file)
     {
         self::$file = $file;
@@ -140,6 +128,13 @@ class lib extends strings
         return self::$contents;
     }
 
+    /**
+     * Writes contents to file
+     * @param string $file
+     * @param string $contents
+     * @throws \Exception
+     * @return bool
+     */
     public static function write($file, $contents)
     {
         self::$file = $file;
@@ -155,60 +150,70 @@ class lib extends strings
 
 class Fw extends lib
 {
+    /**
+     * The current settings object
+     * @var \SimpleXMLElement
+     */
     private static $settings;
 
-    private static function regen($username, $password)
-    {
-        if (empty(self::$settings))
-        {
-            new self;
-        }
-
-        $_SESSION['auth'] = FALSE;
-        $adServer = (string) self::$settings->ldap->server;
-
-        try
-        {
-            $ldap = ldap_connect($adServer);
-            $ldaprdn = self::$settings->ldap->dn . "\\{$username}";
-            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-            ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-            $bind = @ldap_bind($ldap, $ldaprdn, $password);
-            if (!$bind)
-            {
-                return FALSE;
-            }
-            $filter = "(sAMAccountName={$username})";
-            $result = ldap_search($ldap, (string) self::$settings->ldap->searchbase, $filter);
-            if ((!$result) OR !is_resource($result))
-            {
-                return FALSE;
-            }
-            ldap_sort($ldap, $result, 'sn');
-            $info = ldap_get_entries($ldap, $result);
-            if ((!$info) OR empty($info))
-            {
-                return FALSE;
-            }
-            @ldap_close($ldap);
-            $_SESSION['auth'] = TRUE;
-            return TRUE;
-        }
-        catch(Exception $e)
-        {
-            return FALSE;
-        }
-    }
-
+    /**
+     * Authenticates user against Active Directory
+     * @param string $username
+     * @param string $password
+     * @throws \Exception
+     * @return bool
+     */
     public function ldapAuth($username, $password)
     {
         if (isset($username) AND isset($password))
         {
-            return self::regen($username, $password);
+            if (empty(self::$settings))
+            {
+                new self;
+            }
+
+            $_SESSION['auth'] = FALSE;
+            $adServer = (string) self::$settings->ldap->server;
+
+            try
+            {
+                $ldap = ldap_connect($adServer);
+                $ldaprdn = self::$settings->ldap->dn . "\\{$username}";
+                ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+                ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+                $bind = @ldap_bind($ldap, $ldaprdn, $password);
+                if (!$bind)
+                {
+                    return FALSE;
+                }
+                $filter = "(sAMAccountName={$username})";
+                $result = ldap_search($ldap, (string) self::$settings->ldap->searchbase, $filter);
+                if ((!$result) OR !is_resource($result))
+                {
+                    return FALSE;
+                }
+                ldap_sort($ldap, $result, 'sn');
+                $info = ldap_get_entries($ldap, $result);
+                if ((!$info) OR empty($info))
+                {
+                    return FALSE;
+                }
+                @ldap_close($ldap);
+                $_SESSION['auth'] = TRUE;
+                return TRUE;
+            }
+            catch(Exception $e)
+            {
+                return FALSE;
+            }
         }
         return FALSE;
     }
 
+    /**
+     * Checks for authenticated session
+     * @return bool
+     */
     public static function hasLdapAuth()
     {
         if (!isset($_SESSION['auth']) OR $_SESSION['auth'] === FALSE)
@@ -218,6 +223,10 @@ class Fw extends lib
         return TRUE;
     }
 
+    /**
+     * Initialize settings
+     * @throws \Exception
+     */
     public function __construct()
     {
         if (empty(self::$settings))
@@ -245,10 +254,16 @@ class Fw extends lib
         }
     }
 
+    /**
+     * Gets settings object from niksettings.xml
+     * @param string $setting
+     * @throws \Exception
+     * @return object
+     */
     public static function getSettings($setting = NULL)
     {
         new self;
-        return (is_null($setting) === FALSE ? self::$settings[$setting] : self::$settings);
+        return (is_null($setting) === FALSE ? self::$settings->$setting : self::$settings);
     }
 }
 ?>
