@@ -1,10 +1,10 @@
 {
     "name": "nikken1/phplib",
-    "description": "Nikken's PHP library",
+    "description": "PHP library for use in wild",
     "authors": [
         {
             "name": "Jadissa Griffin",
-            "email": "jadissag@nikken.com"
+            "email": "jadissag@gmail.com"
         }
     ],
     "minimum-stability": "dev",

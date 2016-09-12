@@ -1,5 +1,5 @@
 <?php
-namespace NikkenPHPLib;
+namespace JadissaPHPLib;
 
 class strings
 {
@@ -240,7 +240,7 @@ class Fw extends lib
 
                 foreach ($current_directory as $file)
                 {
-                    if (preg_match('/niksettings.xml/', $file))
+                    if (preg_match('/settings.xml/', $file))
                     {
                         self::$settings = simplexml_load_string(file_get_contents((string) $file));
                         break;
