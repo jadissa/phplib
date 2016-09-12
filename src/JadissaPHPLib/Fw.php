@@ -1,5 +1,5 @@
 <?php
-namespace NikkenPHPLib;
+namespace JadissaPHPLib;
 
 class strings
 {
@@ -233,19 +233,7 @@ class Fw extends lib
         {
             try
             {
-                $current_directory = new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator(".."),
-                    \RecursiveIteratorIterator::LEAVES_ONLY,
-                    \RecursiveIteratorIterator::CATCH_GET_CHILD);
-
-                foreach ($current_directory as $file)
-                {
-                    if (preg_match('/niksettings.xml/', $file))
-                    {
-                        self::$settings = simplexml_load_string(file_get_contents((string) $file));
-                        break;
-                    }
-                }
+                self::$settings = simplexml_load_string(file_get_contents((string) 'settings.xml'));
             }
             catch (\Exception $e)
             {

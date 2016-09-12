@@ -1,10 +1,10 @@
 {
-    "name": "nikken1/phplib",
-    "description": "Nikken's PHP library",
+    "name": "jadissa/phplib",
+    "description": "PHP library for use in wild",
     "authors": [
         {
             "name": "Jadissa Griffin",
-            "email": "jadissag@nikken.com"
+            "email": "jadissag@gmail.com"
         }
     ],
     "minimum-stability": "dev",
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-0": {
-            "NikkenPHPLib": "src/"
+            "JadissaPHPLib": "src/"
         }
     }
 }
